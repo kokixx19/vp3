@@ -1,207 +1,112 @@
-ubuntu16 () {
-	
-	apt-get update
-	apt-get install -y squid curl nano sysv-rc-conf ulatency ulatencyd
-	
-	cd /etc/ssh/
-
-	echo "$(sed 's/22/443/g' sshd_config)" > sshd_config
-	echo "" >> sshd_config	
-	echo "Port 22" >> sshd_config	
-	
-	ip=$(wget -qO - icanhazip.com)
-	
-	echo "# PORTAS DE ACESSO NO SQUID" > /etc/squid/squid.conf
-	echo "http_port 80" >> /etc/squid/squid.conf
-	echo "http_port 8080" >> /etc/squid/squid.conf
-	echo "http_port 8799" >> /etc/squid/squid.conf
-	echo "http_port 3128" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "# NOME DO SERVIDOR" >> /etc/squid/squid.conf
-	echo "visible_hostname JorkSting" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "# ACL DE CONEXAO" >> /etc/squid/squid.conf
-	echo "acl accept src $ip" >> /etc/squid/squid.conf
-	echo "acl ip url_regex -i $ip" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "# CACHE DO SQUID" >> /etc/squid/squid.conf
-	echo "cache_mem 200 MB" >> /etc/squid/squid.conf
-	echo "maximum_object_size_in_memory 32 KB" >> /etc/squid/squid.conf
-	echo "maximum_object_size 1024 MB" >> /etc/squid/squid.conf
-	echo "minimum_object_size 0 KB" >> /etc/squid/squid.conf
-	echo "cache_swap_low 90" >> /etc/squid/squid.conf
-	echo "cache_swap_high 95" >> /etc/squid/squid.conf
-	echo "cache_dir ufs /var/spool/squid 100 16 256" >> /etc/squid/squid.conf
-	echo "access_log /var/log/squid/access.log squid" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "" >> /etc/squid/squid.conf
-	echo "# ACESSOS ACL" >> /etc/squid/squid.conf
-	echo "http_access allow accept" >> /etc/squid/squid.conf
-	echo "http_access allow ip" >> /etc/squid/squid.conf
-	echo "http_access deny all" >> /etc/squid/squid.conf
-	echo "cache deny all" >> /etc/squid/squid.conf
-
-	sysv-rc-conf squid on
-
-	service squid restart
-
-	service ssh restart
-	
-	clear
-	echo "Servidor/Proxy"
-	echo "$ip"
-	echo "Porta: 80, 8080, 8799 e 3128"
-	echo "Porta SSH: 443"
-
-
-}
-
-
-ubuntu () {
-	
-	apt-get update
-	apt-get install -y squid3 curl nano sysv-rc-conf ulatency ulatencyd
-	
-	cd /etc/ssh/
-
-	echo "$(sed 's/22/443/g' sshd_config)" > sshd_config
-	echo "" >> sshd_config	
-	echo "Port 22" >> sshd_config		
-	
-	ip=$(wget -qO - icanhazip.com)
-	
-	echo "# PORTAS DE ACESSO NO SQUID" > /etc/squid3/squid.conf
-	echo "http_port 80" >> /etc/squid3/squid.conf
-	echo "http_port 8080" >> /etc/squid3/squid.conf
-	echo "http_port 8799" >> /etc/squid3/squid.conf
-	echo "http_port 3128" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# NOME DO SERVIDOR" >> /etc/squid3/squid.conf
-	echo "visible_hostname JorkSting" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# ACL DE CONEXAO" >> /etc/squid3/squid.conf
-	echo "acl accept src $ip" >> /etc/squid3/squid.conf
-	echo "acl ip url_regex -i $ip" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# CACHE DO SQUID" >> /etc/squid3/squid.conf
-	echo "cache_mem 200 MB" >> /etc/squid3/squid.conf
-	echo "maximum_object_size_in_memory 32 KB" >> /etc/squid3/squid.conf
-	echo "maximum_object_size 1024 MB" >> /etc/squid3/squid.conf
-	echo "minimum_object_size 0 KB" >> /etc/squid3/squid.conf
-	echo "cache_swap_low 90" >> /etc/squid3/squid.conf
-	echo "cache_swap_high 95" >> /etc/squid3/squid.conf
-	echo "cache_dir ufs /var/spool/squid3 30 16 256" >> /etc/squid3/squid.conf
-	echo "access_log /var/log/squid3/access.log squid" >> /etc/squid3/squid.conf
-	echo "cache_log /var/log/squid3/cache.log" >> /etc/squid3/squid.conf
-	echo "cache_store_log /var/log/squid3/store.log" >> /etc/squid3/squid.conf
-	echo "pid_filename /var/log/squid3/squid3.pid" >> /etc/squid3/squid.conf
-	echo "mime_table /usr/share/squid3/mime.conf" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# ACESSOS ACL" >> /etc/squid3/squid.conf
-	echo "http_access allow accept" >> /etc/squid3/squid.conf
-	echo "http_access allow ip" >> /etc/squid3/squid.conf
-	echo "http_access deny all" >> /etc/squid3/squid.conf
-	echo "cache deny all" >> /etc/squid3/squid.conf
-
-	sysv-rc-conf squid3 on
-
-	service squid3 restart
-
-	service ssh restart
-	
-	clear
-	echo "Servidor/Proxy"
-	echo "$ip"
-	echo "Porta: 80, 8080, 8799 e 3128"
-	echo "Porta SSH: 443"
-
-
-}
-
-debian () {
-	
-	apt-get update
-	apt-get install -y squid3 curl nano sysv-rc-conf ulatency ulatencyd
-	
-	cd /etc/ssh/
-
-	echo "$(sed 's/22/443/g' sshd_config)" > sshd_config
-	echo "" >> sshd_config	
-	echo "Port 22" >> sshd_config		
-	
-	ip=$(wget -qO - icanhazip.com)
-	
-	echo "# PORTAS DE ACESSO NO SQUID" > /etc/squid3/squid.conf
-	echo "http_port 80" >> /etc/squid3/squid.conf
-	echo "http_port 8080" >> /etc/squid3/squid.conf
-	echo "http_port 8799" >> /etc/squid3/squid.conf
-	echo "http_port 3128" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# NOME DO SERVIDOR" >> /etc/squid3/squid.conf
-	echo "visible_hostname JorkSting" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# ACL DE CONEXAO" >> /etc/squid3/squid.conf
-	echo "acl accept src $ip" >> /etc/squid3/squid.conf
-	echo "acl ip url_regex -i $ip" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# CACHE DO SQUID" >> /etc/squid3/squid.conf
-	echo "cache_mem 200 MB" >> /etc/squid3/squid.conf
-	echo "maximum_object_size_in_memory 32 KB" >> /etc/squid3/squid.conf
-	echo "maximum_object_size 1024 MB" >> /etc/squid3/squid.conf
-	echo "minimum_object_size 0 KB" >> /etc/squid3/squid.conf
-	echo "cache_swap_low 90" >> /etc/squid3/squid.conf
-	echo "cache_swap_high 95" >> /etc/squid3/squid.conf
-	echo "cache_dir ufs /var/spool/squid3 30 16 256" >> /etc/squid3/squid.conf
-	echo "access_log /var/log/squid3/access.log squid" >> /etc/squid3/squid.conf
-	echo "cache_log /var/log/squid3/cache.log" >> /etc/squid3/squid.conf
-	echo "cache_store_log /var/log/squid3/store.log" >> /etc/squid3/squid.conf
-	echo "pid_filename /var/log/squid3/squid3.pid" >> /etc/squid3/squid.conf
-	echo "mime_table /usr/share/squid3/mime.conf" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "" >> /etc/squid3/squid.conf
-	echo "# ACESSOS ACL" >> /etc/squid3/squid.conf
-	echo "http_access allow accept" >> /etc/squid3/squid.conf
-	echo "http_access allow ip" >> /etc/squid3/squid.conf
-	echo "http_access deny all" >> /etc/squid3/squid.conf
-	echo "cache deny all" >> /etc/squid3/squid.conf
-
-	sysv-rc-conf squid3 on
-
-	service squid3 restart
-
-	service ssh restart
-	
-	clear
-	echo "Servidor/Proxy"
-	echo "$ip"
-	echo "Porta: 80, 8080, 8799 e 3128"
-	echo "Porta SSH: 443"
-	
-}
-
-	if cat /etc/issue | grep "Debian" 1>/dev/null 2>/dev/null; then  
-	
-	debian
-	
-	elif cat /etc/issue | grep "Ubuntu 16" 1>/dev/null 2>/dev/null; then  
-	
-	ubuntu16
-	
-	elif cat /etc/issue | grep "Ubuntu" 1>/dev/null 2>/dev/null; then  
-	
-	ubuntu
-	
-	else
-	echo "Sistema não compatível, saindo..."
-	exit
-fi
+#!/bin/bash
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;31m               MICRO VPSPACK: @MRX470"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+tput setaf 0 ; tput bold ; read -n 1 -s -p "Presione Cualquier tecla para continuar..." ; echo "" ; echo "" ; tput sgr0
+# ACTUALIZACION #
+clear
+echo -e "\033[0;35m-[ 00% ]\033[0m"
+apt-get update -y 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m--------------[ 10% ]\033[0m"
+apt-get upgrade -y 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m---------------------------------[ 30% ]\033[0m"
+apt-get install figlet 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m--------------------------------------------------[ 50% ]\033[0m"
+apt-get install python-pip -y 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m-----------------------------------------------------------------[ 60% ]\033[0m"
+apt-get install dos2unix -y 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m-------------------------------------------------------------------------------------------------[ 80% ]\033[0m"
+apt-get install nohup -y 1> /dev/null 2> /dev/stdout
+clear
+echo -e "\033[0;35m----------------------------------------------------------------------------------------------------------------[ 100% ]\033[0m"
+rm VPS.MRX470.sh
+clear
+# INSTALANDO COMPONENTES #
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+figlet ....MRX470....
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+sleep 2
+tput setaf 2 ; tput bold ; echo "                  INSTALANDO MENU"; tput sgr0
+    wget https://www.dropbox.com/s/njb28t3bcmkz1t9/menu -O /bin/menu 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/menu
+sleep 2
+tput setaf 3 ; tput bold ; echo "       INSTALANDO ADMINISTRADOR DE USUARIOS"; tput sgr0
+    wget https://www.dropbox.com/s/avd7idmu5my7qxx/adm -O /bin/adm 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/adm
+sleep 2
+tput setaf 7 ; tput bold ; echo "        INSTALANDO  GENERADOR DE PAYLOADS"; tput sgr0
+    wget https://www.dropbox.com/s/ayc1siw2vq0thwi/esqueleton -O /bin/esqueleton 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/esqueleton
+sleep 2
+tput setaf 4 ; tput bold ; echo "         INSTALANDO ADMINISTRADOR DE VPS"; tput sgr0
+    wget https://www.dropbox.com/s/1qzd3gjhm1fprok/adm2 -O /bin/adm2 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/adm2
+sleep 2
+tput setaf 5 ; tput bold ; echo "     INSTALANDO MENU DE  ADMINISTRADOR DE VPS"; tput sgr0
+    wget https://www.dropbox.com/s/73mhj1aru7knkuy/adm2fun -O /bin/adm2fun 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/adm2fun
+sleep 2
+tput setaf 7 ; tput bold ; echo "              INSTALANDO HERRAMIENTAS"; tput sgr0
+    wget https://www.dropbox.com/s/hk2zjgri8c8dicy/adm3 -O /bin/adm3 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/adm3
+sleep 2
+tput setaf 2 ; tput bold ; echo "          INSTALANDO MENU DE HERRAMIENTAS"; tput sgr0
+    wget https://www.dropbox.com/s/8bdgxagyq4yvfek/adm3fun -O /bin/adm3fun 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/adm3fun
+sleep 2
+tput setaf 3 ; tput bold ; echo "   INSTALANDO MENU DE ADMINISTRADOR DE USUARIOS"; tput sgr0
+    wget https://www.dropbox.com/s/lmh840r6kn0mtkk/admfun -O /bin/admfun 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/admfun
+sleep 2
+tput setaf 4 ; tput bold ; echo "              INSTALANDO COMPLEMENTO1"; tput sgr0
+    wget https://www.dropbox.com/s/rvl4fqc172124ym/dropb -O /bin/dropb 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/dropb
+sleep 2
+tput setaf 5 ; tput bold ; echo "          INSTALANDO COMPLEMENTO DEL DROP"; tput sgr0
+    wget https://www.dropbox.com/s/az3lcbd81g6cmo6/dropb-inst -O /bin/dropb-inst 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/dropb-inst
+sleep 2
+tput setaf 7 ; tput bold ; echo "              INSTALANDO LIMITADOR 1"; tput sgr0
+    wget https://www.dropbox.com/s/m71uesagtcbmzla/limitera -O /bin/limitera 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/limitera
+sleep 2
+tput setaf 2 ; tput bold ; echo "              INSTALANDO LIMITADOR 2"; tput sgr0
+    wget https://www.dropbox.com/s/4hlv0j2d17dbjg9/limiterb -O /bin/limiterb 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/limiterb
+sleep 2
+tput setaf 3 ; tput bold ; echo "        INSTALANDO COMPLEMENTO  DE PUERTOS"; tput sgr0
+    wget https://www.dropbox.com/s/48v1uxkz631yze2/portas -O /bin/portas 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/portas
+sleep 2
+tput setaf 4 ; tput bold ; echo "               INSTALANDO SPEEDTEST"; tput sgr0
+    wget https://www.dropbox.com/s/vv2c5lohul50pon/speedtest.py -O /bin/speedtest.py 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/speedtest.py
+sleep 2
+tput setaf 5 ; tput bold ; echo "      INSTALANDO  COMPLEMENTO DE PROXY SQUID"; tput sgr0
+    wget https://www.dropbox.com/s/7ek63vngyvhct9v/sq3 -O /bin/sq3 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/sq3
+sleep 2
+tput setaf 7 ; tput bold ; echo "                  INSTALANDO VNC"; tput sgr0
+    wget https://www.dropbox.com/s/45rxdm71wl88y4w/VNC -O /bin/VNC 1> /dev/null 2> /dev/stdout
+    chmod +x /bin/VNC
+sleep 2
+tput setaf 7 ; tput bold ; echo "             INSTALANDO PROXY PYTHON"; tput sgr0
+    wget wget https://www.dropbox.com/s/yo5nwa6kuvv2awd/proxy2.py 1> /dev/null 2> /dev/stdout
+    chmod +x proxy2.py
+sleep 2
+clear
+echo -e "\033[0;35m---------------------------------------------------------\033[0m"
+echo -e "\033[1;33m                   VPS PACK BY @JORKSTING \033[0m"
+echo -e "\033[1;36m                  INSTALACION TERMINADA \033[1;36m"
+echo -e "\033[0;35m---------------------------------------------------------\033[0m"
+figlet ....MRX470....
+echo -e "\033[0;35m---------------------------------------------------------\033[0m"
+echo -e "\033[1;33m                       DIGITE MENU \033[0m"
+echo -e "\033[1;36m                    PARA VER COMANDOS \033[1;36m"
+echo -e "\033[1;36mPARA ACTIVAR PROXY PYTHON EJECUTE "nohup python proxy2.py" \033[1;36m"
+echo -e "\033[0;35m---------------------------------------------------------\033[0m"
